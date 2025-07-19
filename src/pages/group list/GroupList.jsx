@@ -2,25 +2,25 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import dbService from "../../appwrite/database";
 import { Container } from "../../components/componentIndex";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./GroupList.css";
 import { useNavigate } from "react-router-dom";
+import { expenseGroups } from "../../redux/groupSlice";
 function GroupList() {
-  const [groups, setGroups] = useState([]);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const groups = useSelector((state) => state.expenseGroups.groups);
   const user = useSelector((state) => state.auth.userData);
   useEffect(() => {
     async function fetchGroups() {
-      if (user?.$id) {
+      if (user?.$id && groups.length === 0) {
         const data = await dbService.getGroups(user.$id);
-        console.log(data.documents);
-        if (data) {
-          setGroups(data.documents);
-        }
+        if (data) dispatch(expenseGroups(data.documents));
       }
     }
     fetchGroups();
-  }, [user]);
+  }, [user, groups]);
+
   async function createGroup() {
     const name = prompt("Enter your Expense Group Name");
 
@@ -35,7 +35,7 @@ function GroupList() {
         name.toUpperCase()
       );
       if (newGroup) {
-        setGroups((prev) => [...prev, newGroup]);
+        dispatch(expenseGroups([...groups, newGroup]));
         console.log("Successfully created group:", name);
       } else {
         alert("Failed to create group. Please try again.");
@@ -49,20 +49,21 @@ function GroupList() {
   return (
     <Container>
       <div className="group-list-page">
-        {groups.map((group) => {
-          return (
-            <button
-              className="group"
-              onClick={() => {
-                navigate(`/group/${group.$id}`);
-              }}
-              key={group.$id}
-            >
-              <div className="group-name">{group.groupName}</div>
-              <div className="group-total-expense"> Total : 1200$</div>
-            </button>
-          );
-        })}
+        {groups &&
+          groups.map((group) => {
+            return (
+              <button
+                className="group"
+                onClick={() => {
+                  navigate(`/group/${group.$id}`);
+                }}
+                key={group.$id}
+              >
+                <div className="group-name">{group.groupName}</div>
+                <div className="group-total-expense"> Total : 1200$</div>
+              </button>
+            );
+          })}
         <button onClick={createGroup} className="group">
           <MdOutlineAddCircleOutline />
         </button>

@@ -82,7 +82,24 @@ input::-webkit-inner-spin-button {
   font-weight: bold;
   border-radius: 10px;
 }
-
+.expense-table {
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  padding-right: 5px;
+}
+.expense-table::-webkit-scrollbar {
+  height: 0;
+  width: 0;
+  height: 5px;
+  width: 5px;
+}
+.expense-table::-webkit-scrollbar-thumb {
+  background-color: #fc6e20;
+  border-radius: 10px;
+}
 .expense-row {
   display: flex;
   justify-content: space-evenly;
@@ -98,6 +115,8 @@ input::-webkit-inner-spin-button {
 }
 .amount {
   width: 100px;
+  display: flex;
+  align-items: center;
 }
 .date {
   width: 100px;
@@ -106,6 +125,14 @@ input::-webkit-inner-spin-button {
   width: 150px;
   display: flex;
   justify-content: space-around;
+}
+.th {
+  text-align: center;
+}
+.td {
+  padding-left: 10px;
+  background-color: #323232;
+  border-radius: 5px;
 }
 
 .edit-btn,

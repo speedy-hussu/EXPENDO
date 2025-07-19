@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from "react";
 import "./ExpenseList.css";
+import { FaRupeeSign } from "react-icons/fa";
 import { Container } from "../../components/componentIndex";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import dbService from "../../appwrite/database";
+import { expenseGroups } from "../../redux/groupSlice";
 function ExpenseList() {
   const { groupId } = useParams();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.userData);
-  const [expenses, setExpenses] = useState("");
+  const groups = useSelector((state) => state.expenseGroups.groups);
+  const [expenses, setExpenses] = useState([]);
+  const [groupName, setGroupName] = useState("");
+  const navigate = useNavigate();
+
   function formatDate(dateStr) {
     if (!dateStr) return "";
     const rawDate = dateStr.split("T")[0]; // Extract "yyyy-mm-dd"
     const [year, month, day] = rawDate.split("-");
     return `${day}-${month}-${year}`;
   }
-
+  async function deleteGroup() {
+    if (confirm("want to delete", groupName)) {
+      await dbService.deleteGroupAndExpenses(groupId);
+      const updatedGroups = groups.filter((g) => g.$id !== groupId);
+      dispatch(expenseGroups(updatedGroups));
+      navigate("/group");
+    }
+  }
   const [data, setData] = useState({
     title: "",
     amount: "",
@@ -45,12 +59,32 @@ function ExpenseList() {
     try {
       const data = await dbService.getExpenses(groupId);
       if (data) {
-        setExpenses(data.documents);
+        const sortedExpenses = [...data.documents] // clone first
+          .sort((a, b) => new Date(a.date) - new Date(b.date)); // ISO works natively
+
+        setExpenses(sortedExpenses); // triggers re‑render in correct order
       }
     } catch (e) {
       console.error(e);
     }
   }
+  async function dltExpense(expenseId) {
+    try {
+      await dbService.deleteExpense(expenseId);
+      fetchExpenses();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  useEffect(() => {
+    if (groups && groupId) {
+      const result = groups.find((group) => group.$id === groupId);
+      if (result) {
+        setGroupName(result.groupName);
+      }
+    }
+  }, [groups, groupId]);
+
   useEffect(() => {
     fetchExpenses();
   }, [groupId]);
@@ -60,7 +94,7 @@ function ExpenseList() {
   return (
     <Container>
       <div className="expense-list-page">
-        <div className="expense-group-name">GOA</div>
+        <div className="expense-group-name">{groupName}</div>
         <div className="inputs">
           <input
             value={data.title}
@@ -103,26 +137,42 @@ function ExpenseList() {
         </div>
 
         <div className="expense-container">
-          <div className="expense-header">
+          {/* <div className="expense-header">
             <div className="name">Title</div>
             <div className="amount">Amount</div>
-            <div className="date">Date</div>
-            <div className="action">Action</div>
-          </div>
+            <div className="date th">Date</div>
+            <div className="action th">Action</div>
+          </div> */}
 
-          {expenses &&
-            expenses.map((expense) => (
-              <div className="expense-row" key={expense.$id}>
-                <div className="name">{expense.title}</div>
-                <div className="amount">{expense.amount}</div>
-                <div className="date">{formatDate(expense.date)}</div>
-                <div className="action">
-                  <button className="edit-btn">Edit</button>
-                  <button className="delete-btn">Delete</button>
+          <div className="expense-table">
+            {expenses &&
+              expenses.map((expense) => (
+                <div className="expense-row" key={expense.$id}>
+                  <div className="name">{expense.title}</div>
+                  <div className="amount td">
+                    <FaRupeeSign /> {expense.amount}
+                  </div>
+                  <div className="date">{formatDate(expense.date)}</div>
+                  <div className="action">
+                    <button className="edit-btn">Edit</button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => {
+                        if (confirm(`want to delete",${expense.title}`)) {
+                          dltExpense(expense.$id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+          </div>
         </div>
+        <button onClick={deleteGroup} className="dlt-group-btn">
+          Delete group
+        </button>
       </div>
     </Container>
   );

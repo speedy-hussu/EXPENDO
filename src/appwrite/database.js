@@ -31,6 +31,36 @@ export class Service {
       [Query.equal("userId", userId)]
     );
   }
+  async deleteGroupAndExpenses(groupId) {
+    try {
+      // 1. Delete all expenses linked to the group
+      const expenseDocs = await this.databases.listDocuments(
+        config.appwriteDatabaseId,
+        config.appwriteExpenseCollectionId,
+        [Query.equal("groupId", groupId)]
+      );
+
+      for (const expense of expenseDocs.documents) {
+        await this.databases.deleteDocument(
+          config.appwriteDatabaseId,
+          config.appwriteExpenseCollectionId,
+          expense.$id
+        );
+      }
+
+      // 2. Delete the group document
+      await this.databases.deleteDocument(
+        config.appwriteDatabaseId,
+        config.appwriteGroupCollectionId,
+        groupId // Make sure this is the group's $id
+      );
+
+      console.log("Group and its expenses deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting group and expenses:", error);
+    }
+  }
+
   async addExpenseToGroup(groupId, userId, title, amount, date) {
     try {
       return await this.databases.createDocument(
@@ -53,6 +83,13 @@ export class Service {
     } catch (e) {
       console.error(e);
     }
+  }
+  async deleteExpense(expenseId) {
+    return await this.databases.deleteDocument(
+      config.appwriteDatabaseId,
+      config.appwriteExpenseCollectionId,
+      expenseId
+    );
   }
 }
 const dbService = new Service();
