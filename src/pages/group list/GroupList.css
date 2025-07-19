@@ -1,0 +1,31 @@
+.group-list-page {
+  width: 100%;
+  padding-top: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+.group {
+  height: 130px;
+  min-width: 150px;
+  max-width: 300px;
+  color: #fc6e20;
+  padding: 0px 10px;
+  line-break: auto;
+
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  background: #323232;
+  border-radius: 10px;
+}
+.group .group-name {
+  font-size: 25px;
+}
+.group .group-total-expense {
+  color: #ffe7d0;
+  font-size: 15px;
+}

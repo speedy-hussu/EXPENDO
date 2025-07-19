@@ -1,0 +1,135 @@
+.expense-list-page {
+  width: 100%;
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.expense-group-name {
+  font-size: 30px;
+  color: #ffe7d0;
+  font-weight: 600;
+}
+
+.expense-list-page .inputs {
+  width: 900px;
+  height: 50px;
+  padding: 0px 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #323232;
+}
+.inputs .input-title {
+  width: 200px;
+  height: 35px;
+  background-color: #1b1b1b;
+  padding: 0px 10px;
+  font-size: 16px;
+  color: #ffe7d0;
+}
+.inputs .input-amount {
+  text-align: center;
+  width: 200px;
+  height: 35px;
+  background-color: #1b1b1b;
+  padding: 0px 10px;
+  color: #ffe7d0;
+  font-size: 16px;
+}
+.inputs .input-date {
+  text-align: center;
+  height: 35px;
+  padding: 0px 5px;
+  background-color: #1b1b1b;
+  font-size: 16px;
+  color: #ffe7d0;
+}
+.add-expense-btn {
+  font-size: 16px;
+  padding: 5px 15px;
+  background-color: #fc6e20;
+  color: #ffe7d0;
+  border-radius: 10px;
+}
+input {
+  border-radius: 10px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.expense-container {
+  border-radius: 10px;
+  width: 900px;
+  background-color: #323232;
+  padding: 20px;
+  margin-top: 10px;
+  font-family: "Inter", sans-serif;
+  color: #ffe7d0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.expense-header {
+  display: flex;
+  justify-content: space-evenly;
+  background-color: #fc6e20;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.expense-row {
+  display: flex;
+  justify-content: space-evenly;
+  background-color: #1b1b1b;
+  padding: 10px;
+  border-radius: 10px;
+  align-items: center;
+  font-weight: 500;
+}
+
+.name {
+  width: 250px;
+}
+.amount {
+  width: 100px;
+}
+.date {
+  width: 100px;
+}
+.action {
+  width: 150px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #3b82f6;
+}
+
+.delete-btn {
+  background-color: #ef4444;
+}
+
+.edit-btn:hover {
+  background-color: #2563eb;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+}

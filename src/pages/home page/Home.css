@@ -1,0 +1,26 @@
+.home-page {
+  width: 100%;
+  height: 100dvh;
+  padding: 0px 0px;
+  padding-top: 70px;
+  background-color: #1b1b1b;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #ffe7d0;
+}
+.left {
+  height: 300px;
+  width: 600px;
+}
+.left #header-text {
+  font-size: 50px;
+}
+.left #para-text {
+  margin-bottom: 40px;
+  font-size: 16px;
+}
+.right img {
+  height: 500px;
+  width: 500px;
+}
