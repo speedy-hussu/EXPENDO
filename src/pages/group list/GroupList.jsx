@@ -60,7 +60,7 @@ function GroupList() {
                 key={group.$id}
               >
                 <div className="group-name">{group.groupName}</div>
-                <div className="group-total-expense"> Total : 1200$</div>
+                {/* <div className="group-total-expense"> Total : 1200$</div> */}
               </button>
             );
           })}
