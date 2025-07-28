@@ -11,7 +11,11 @@ export class AuthService {
   }
   async authLogin() {
     try {
-      this.account.createOAuth2Session("google", "http://localhost:5173");
+      this.account.createOAuth2Session(
+        "google",
+        "http://localhost:5173",
+        "https://ur-expendo.netlify.app"
+      );
     } catch (e) {
       console.error(e);
     }
