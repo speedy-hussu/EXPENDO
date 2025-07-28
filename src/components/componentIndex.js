@@ -1,3 +1,5 @@
 import Container from "./container/Container";
 import Nav from "./navbar/Nav";
-export { Nav, Container };
+import Popup from "./message popup/Popup";
+import AuthSecurity from "./AuthSecurity";
+export { Nav, Container, Popup, AuthSecurity };

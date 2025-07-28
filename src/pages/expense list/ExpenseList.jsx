@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ExpenseList.css";
 import { FaRupeeSign } from "react-icons/fa";
-import { Container } from "../../components/componentIndex";
+import { Container, Popup } from "../../components/componentIndex";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import dbService from "../../appwrite/database";
@@ -13,7 +13,10 @@ function ExpenseList() {
   const groups = useSelector((state) => state.expenseGroups.groups);
   const [expenses, setExpenses] = useState([]);
   const [groupName, setGroupName] = useState("");
+  const [popup, setPopup] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
+  const [editId, setEditId] = useState(null);
   const [totalExpense, setTotalExpense] = useState(0);
 
   function formatDate(dateStr) {
@@ -25,6 +28,11 @@ function ExpenseList() {
   async function deleteGroup() {
     if (confirm("want to delete", groupName)) {
       await dbService.deleteGroupAndExpenses(groupId);
+      setShowPopup(true);
+      setPopup("Group Deleted");
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 1000);
       const updatedGroups = groups.filter((g) => g.$id !== groupId);
       dispatch(expenseGroups(updatedGroups));
       navigate("/group");
@@ -50,6 +58,11 @@ function ExpenseList() {
         amount: "",
         date: new Date().toISOString().split("T")[0],
       });
+      setShowPopup(true);
+      setPopup("Expense Added");
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 1000);
       fetchExpenses();
     } catch (e) {
       console.error(e);
@@ -79,17 +92,48 @@ function ExpenseList() {
   async function dltExpense(expenseId) {
     try {
       await dbService.deleteExpense(expenseId);
+
+      setShowPopup(true);
+      setPopup("Expense Deleted");
+
       fetchExpenses();
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 1000);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async function updExpense(expenseId) {
+    try {
+      await dbService.updateExpense(
+        expenseId,
+        data.title,
+        parseInt(data.amount),
+        data.date
+      );
+      setEditId(null);
+      fetchExpenses();
+      setShowPopup(true);
+      setPopup("Expense Edited");
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 1000);
     } catch (e) {
       console.error(e);
     }
   }
   useEffect(() => {
-    if (groups && groupId) {
-      const result = groups.find((group) => group.$id === groupId);
-      if (result) {
-        setGroupName(result.groupName);
+    const group = groups?.find((g) => g.$id === groupId);
+    if (group) {
+      setGroupName(group.groupName);
+    } else {
+      // fallback if groups not in redux (e.g., on page reload)
+      async function fetchGroup() {
+        const res = await dbService.getGroup(groupId); // create this function
+        if (res) setGroupName(res.groupName);
       }
+      fetchGroup();
     }
   }, [groups, groupId]);
 
@@ -101,6 +145,7 @@ function ExpenseList() {
   }, [expenses]);
   return (
     <Container>
+      {showPopup && <Popup message={popup} />}
       <div className="expense-list-page">
         <div className="expense-left">
           <div className="expense-info">
@@ -152,7 +197,11 @@ function ExpenseList() {
               className="input-date"
               type="date"
             />
-            <button onClick={addExpense} className="add-expense-btn">
+            <button
+              onClick={addExpense}
+              className="add-expense-btn"
+              disabled={editId}
+            >
               Add
             </button>
           </div>
@@ -175,7 +224,31 @@ function ExpenseList() {
                     </div>
                     <div className="date">{formatDate(expense.date)}</div>
                     <div className="action">
-                      <button className="edit-btn">Edit</button>
+                      {editId === expense.$id ? (
+                        <button
+                          onClick={() => updExpense(expense.$id)}
+                          className="edit-btn"
+                        >
+                          Update
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            const formattedDate = new Date(expense.date)
+                              .toISOString()
+                              .split("T")[0];
+                            setData({
+                              title: expense.title,
+                              amount: expense.amount,
+                              date: formattedDate,
+                            });
+                            setEditId(expense.$id);
+                          }}
+                          className="edit-btn"
+                        >
+                          Edit
+                        </button>
+                      )}
                       <button
                         className="delete-btn"
                         onClick={() => {

@@ -1,0 +1,25 @@
+.popup {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  height: 40px;
+  padding: 10px;
+  color: #ffe7d0;
+  background-color: #fc6e20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  font-size: 17px;
+}
+.done-icon {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.popup-message {
+  font-size: 18px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}

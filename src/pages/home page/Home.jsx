@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container } from "../../components/componentIndex";
 import "./Home.css";
 import heroImage from "../../assets/heroImg.png";
 function Home() {
+  
   return (
     <Container>
       <div className="home-page">

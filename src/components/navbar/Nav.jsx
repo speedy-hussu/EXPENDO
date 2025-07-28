@@ -4,10 +4,11 @@ import "./Nav.css";
 import authService from "../../appwrite/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, logoutUser } from "../../redux/authSlice";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Nav() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [user, setUser] = useState("");
   const isLogin = useSelector((state) => state.auth.status);
 
@@ -40,6 +41,7 @@ function Nav() {
       authService.authLogout();
       dispatch(logoutUser());
       setUser("");
+      navigate("/");
     }
   }
   function getSafeInitials(name) {

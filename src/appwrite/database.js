@@ -31,6 +31,17 @@ export class Service {
       [Query.equal("userId", userId)]
     );
   }
+  async getGroup(groupId) {
+    try {
+      return await this.databases.getDocument(
+        config.appwriteDatabaseId,
+        config.appwriteGroupCollectionId,
+        groupId
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  }
   async deleteGroupAndExpenses(groupId) {
     try {
       // 1. Delete all expenses linked to the group
@@ -90,6 +101,18 @@ export class Service {
       config.appwriteExpenseCollectionId,
       expenseId
     );
+  }
+  async updateExpense(expenseId, title, amount, date) {
+    try {
+      return await this.databases.updateDocument(
+        config.appwriteDatabaseId,
+        config.appwriteExpenseCollectionId,
+        expenseId,
+        { title, amount, date }
+      );
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
 const dbService = new Service();
