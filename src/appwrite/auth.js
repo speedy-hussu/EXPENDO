@@ -11,15 +11,20 @@ export class AuthService {
   }
   async authLogin() {
     try {
-      this.account.createOAuth2Session(
+      const redirectURL = window.location.hostname.includes("localhost")
+        ? "http://localhost:5173"
+        : "https://ur-expendo.netlify.app";
+
+      return await this.account.createOAuth2Session(
         "google",
-        "http://localhost:5173",
-        "https://ur-expendo.netlify.app"
+        redirectURL,
+        redirectURL
       );
     } catch (e) {
-      console.error(e);
+      console.error("OAuth login failed:", e);
     }
   }
+
   async authLogout() {
     try {
       return await this.account.deleteSessions();
