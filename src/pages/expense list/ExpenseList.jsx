@@ -25,6 +25,7 @@ function ExpenseList() {
     const [year, month, day] = rawDate.split("-");
     return `${day}-${month}-${year}`;
   }
+  ;
   async function deleteGroup() {
     if (confirm("want to delete", groupName)) {
       await dbService.deleteGroupAndExpenses(groupId);
@@ -112,6 +113,7 @@ function ExpenseList() {
         parseInt(data.amount),
         data.date
       );
+      
       setEditId(null);
       fetchExpenses();
       setShowPopup(true);
@@ -140,9 +142,6 @@ function ExpenseList() {
   useEffect(() => {
     fetchExpenses();
   }, [groupId]);
-  useEffect(() => {
-    console.log(expenses);
-  }, [expenses]);
   return (
     <Container>
       {showPopup && <Popup message={popup} />}
@@ -207,13 +206,6 @@ function ExpenseList() {
           </div>
 
           <div className="expense-container">
-            {/* <div className="expense-header">
-            <div className="name">Title</div>
-            <div className="amount">Amount</div>
-            <div className="date th">Date</div>
-            <div className="action th">Action</div>
-          </div> */}
-
             <div className="expense-table">
               {expenses &&
                 expenses.map((expense) => (

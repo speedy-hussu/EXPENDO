@@ -19,7 +19,6 @@ function Nav() {
       if (userData) {
         dispatch(loginUser(userData));
         setUser(userData.name);
-        console.log("Logged in as:", userData);
       } else {
         dispatch(logoutUser());
         setUser("");
@@ -36,8 +35,7 @@ function Nav() {
 
   // ✅ Logout and update store
   function handleLogout() {
-    let confirmLogout = confirm("want to logout", user);
-    if (confirm) {
+    if (confirm("want to logout", user)) {
       authService.authLogout();
       dispatch(logoutUser());
       setUser("");
