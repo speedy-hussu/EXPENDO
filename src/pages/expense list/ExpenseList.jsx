@@ -116,7 +116,11 @@ function ExpenseList() {
         parseInt(data.amount),
         data.date
       );
-
+      setData({
+        title: "",
+        amount: "",
+        date: new Date().toISOString().split("T")[0],
+      });
       setEditId(null);
       fetchExpenses();
       setShowPopup(true);
