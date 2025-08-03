@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import LoginPng from "../../assets/login.png";
 import dbService from "../../appwrite/database";
-import { Container, Popup } from "../../components/componentIndex";
+import { Container, Popup, Loader } from "../../components/componentIndex";
 import { useDispatch, useSelector } from "react-redux";
 import "./GroupList.css";
 import { useNavigate } from "react-router-dom";
@@ -67,9 +67,15 @@ function GroupList() {
       </div>
     );
   }
+
   if (loading) {
-    return <div>Loading ....</div>;
+    return (
+      <Container>
+        <Loader />
+      </Container>
+    );
   }
+
   return (
     <Container>
       {showPopup && <Popup message={popup} />}
@@ -85,7 +91,6 @@ function GroupList() {
                 key={group.$id}
               >
                 <div className="group-name">{group.groupName}</div>
-                {/* <div className="group-total-expense"> Total : 1200$</div> */}
               </button>
             );
           })}

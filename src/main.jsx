@@ -20,7 +20,7 @@ const router = createBrowserRouter([
         path: "/group",
         element: (
           <AuthSecurity auth="true">
-            <GroupList />,
+            <GroupList />
           </AuthSecurity>
         ),
       },
@@ -28,18 +28,10 @@ const router = createBrowserRouter([
         path: "/group/:groupId",
         element: (
           <AuthSecurity auth="true">
-            <ExpenseList />,
+            <ExpenseList />
           </AuthSecurity>
         ),
       },
-      // {
-      //   path: "/login",
-      //   element: (
-      //     <AuthSecurity auth="false">
-      //       <Login />
-      //     </AuthSecurity>
-      //   ),
-      // },
     ],
   },
 ]);

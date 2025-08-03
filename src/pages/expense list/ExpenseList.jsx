@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ExpenseList.css";
 import { FaRupeeSign } from "react-icons/fa";
-import { Container, Popup } from "../../components/componentIndex";
+import { Container, Loader, Popup } from "../../components/componentIndex";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import dbService from "../../appwrite/database";
@@ -13,6 +13,7 @@ function ExpenseList() {
   const groups = useSelector((state) => state.expenseGroups.groups);
   const [expenses, setExpenses] = useState([]);
   const [groupName, setGroupName] = useState("");
+  const [loading, setLoading] = useState(true);
   const [popup, setPopup] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
@@ -25,17 +26,16 @@ function ExpenseList() {
     const [year, month, day] = rawDate.split("-");
     return `${day}-${month}-${year}`;
   }
-  ;
   async function deleteGroup() {
     if (confirm("want to delete", groupName)) {
       await dbService.deleteGroupAndExpenses(groupId);
       setShowPopup(true);
       setPopup("Group Deleted");
+      const updatedGroups = groups.filter((g) => g.$id !== groupId);
+      dispatch(expenseGroups(updatedGroups));
       setTimeout(() => {
         setShowPopup(false);
       }, 1000);
-      const updatedGroups = groups.filter((g) => g.$id !== groupId);
-      dispatch(expenseGroups(updatedGroups));
       navigate("/group");
     }
   }
@@ -46,27 +46,29 @@ function ExpenseList() {
   });
   async function addExpense() {
     if (!data.amount || !data.title) alert("enter the value");
-    try {
-      await dbService.addExpenseToGroup(
-        groupId,
-        user.$id,
-        data.title,
-        parseInt(data.amount),
-        data.date
-      );
-      setData({
-        title: "",
-        amount: "",
-        date: new Date().toISOString().split("T")[0],
-      });
-      setShowPopup(true);
-      setPopup("Expense Added");
-      setTimeout(() => {
-        setShowPopup(false);
-      }, 1000);
-      fetchExpenses();
-    } catch (e) {
-      console.error(e);
+    else {
+      try {
+        await dbService.addExpenseToGroup(
+          groupId,
+          user.$id,
+          data.title,
+          parseInt(data.amount),
+          data.date
+        );
+        setData({
+          title: "",
+          amount: "",
+          date: new Date().toISOString().split("T")[0],
+        });
+        setShowPopup(true);
+        setPopup("Expense Added");
+        setTimeout(() => {
+          setShowPopup(false);
+        }, 1000);
+        fetchExpenses();
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
   useEffect(() => {
@@ -81,6 +83,7 @@ function ExpenseList() {
     try {
       const data = await dbService.getExpenses(groupId);
       if (data) {
+        setLoading(false);
         const sortedExpenses = [...data.documents] // clone first
           .sort((a, b) => new Date(a.date) - new Date(b.date)); // ISO works natively
 
@@ -113,7 +116,7 @@ function ExpenseList() {
         parseInt(data.amount),
         data.date
       );
-      
+
       setEditId(null);
       fetchExpenses();
       setShowPopup(true);
@@ -142,6 +145,12 @@ function ExpenseList() {
   useEffect(() => {
     fetchExpenses();
   }, [groupId]);
+  if (loading)
+    return (
+      <Container>
+        <Loader />
+      </Container>
+    );
   return (
     <Container>
       {showPopup && <Popup message={popup} />}
@@ -244,7 +253,7 @@ function ExpenseList() {
                       <button
                         className="delete-btn"
                         onClick={() => {
-                          if (confirm(`want to delete",${expense.title}`)) {
+                          if (confirm(`want to delete ${expense.title}`)) {
                             dltExpense(expense.$id);
                           }
                         }}
