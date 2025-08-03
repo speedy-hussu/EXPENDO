@@ -13,7 +13,7 @@ export class AuthService {
     try {
       const redirectURL = window.location.hostname.includes("localhost")
         ? "http://localhost:5173"
-        : "https://ur-expendo.netlify.app";
+        : "https://ur-expenso.netlify.app";
 
       return await this.account.createOAuth2Session(
         "google",
