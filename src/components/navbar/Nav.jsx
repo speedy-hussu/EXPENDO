@@ -52,7 +52,7 @@ function Nav() {
   }
   return (
     <div className="nav">
-      <div className="logo">Expendo</div>
+      <div className="logo">Expenso</div>
 
       <div className="nav-links">
         <NavLink
