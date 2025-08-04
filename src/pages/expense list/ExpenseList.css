@@ -40,6 +40,9 @@
 
   color: #ffe7d0;
 }
+.bottom button:hover{
+    background-color: rgba(255, 0, 0, 0.66);
+}
 
 .expense-list-page .inputs {
   width: 900px;
@@ -82,6 +85,9 @@
   background-color: #fc6e20;
   color: #ffe7d0;
   border-radius: 10px;
+}
+.add-expense-btn:hover{
+    background-color: #fc6d20c2;
 }
 .add-expense-btn:disabled {
   background-color: grey;
